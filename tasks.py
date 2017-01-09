@@ -1,7 +1,7 @@
 from celery import Celery
-import datetime
+from datetime import datetime
 import requests
-from pony.orm import *
+from via_pony import adding_data
 
 app = Celery('tasks')
 app.config_from_object('celeryconfig')
@@ -15,20 +15,4 @@ def urls(u):
         result = False
     finally:
         print (u, result)
-        #    put_in_db(u, result, str(datetime.datetime.now()))
-
-'''
-def put_in_db(url, result, date):
-    try:
-        conn = psycopg2.connect("dbname='py_monitor' user='python' host='localhost' password='123'")
-        print ('connected succesfully')
-        cur = conn.cursor()
-        cur.execute("insert into test.gathering_data (res_addr, time, is_online) values (%s, %s, %s')", (url, date, result))
-        conn.commit()
-        cur.close()
-        conn.close()
-    except:
-        print ("I am unable to connect to the database")
-
-#urls(
-'''
+        adding_data (u, datetime.now().strftime("%Y-%m-%d %H:%M:%S"), result)
